@@ -8,14 +8,37 @@ const app = express();
 // const port = 3000;
 const port = process.env.PORT || 3000;
 
+// const db = new pg.Client({
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_NAME,
+//   password: process.env.DB_PASSWORD,
+//   port: process.env.DB_PORT,
+// });
+// db.connect();
+
+
 const db = new pg.Client({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
   database: process.env.DB_NAME,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
-db.connect();
+await db.connect();
+
+await db.query(`
+CREATE TABLE IF NOT EXISTS blog (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(100) UNIQUE NOT NULL,
+    post VARCHAR(700) NOT NULL
+);
+`);
+
+console.log("Blog table is ready.");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("."));
@@ -27,7 +50,7 @@ let posts = [
 
 
 app.get("/", async (req, res) => {
-  const result = await db.query("SELECT * FROM blog ORDER BY id ASC");
+  const result = await db.query("SELECT * FROM blog ORDER BY id DESC");
   posts = result.rows;
   res.render("index.ejs", {
     posts: posts
