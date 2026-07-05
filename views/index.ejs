@@ -1,0 +1,53 @@
+<%- include('header.ejs'); -%>
+
+    <h1>
+      HELLO, WELCOME TO MOTIVATIONAL POST WEBSITE.
+    </h1>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Motivational Post</h2>
+      <p>Welcome to our motivational post website! Here, you'll find a collection of inspiring articles, quotes, and stories to uplift your spirits and keep you motivated. Whether you're looking for personal growth, career advice, or simply a boost of positivity, we've got you covered. Explore our posts and let the motivation flow!</p>
+    </div>
+    <div class="col-md-6" style="width: 90px;height: 130px;">
+      <img src="Highcatoon.jpeg" alt="Motivational Image" style="width: 100%; height: 100%;">
+    </div>
+  </div>
+
+  <div class="row" style="margin-top: 20px;width: 50%;">
+    <form action="/posts" method="POST" class="form-group">
+        <div>
+        <label for="title" style="font-size: large;">Title:</label>
+        <input type="text" class="form-control" id="title" name="title" style="resize: none;width: 100%;height: 40px;" required>
+        </div>
+        <div>
+        <label for="post" style="font-size: large;">Post:</label>
+        <textarea class="form-control" id="post" name="post" rows="5" style="resize: none;width: 100%;" required></textarea>
+        </div>
+      <button type="submit" class="btn btn-primary" style="width:90px;">Post</button>
+    </form>
+  </div>
+
+  <h2>Latest Posts</h2>
+   <hr>
+    <div class="row">
+        <% for(let post of posts){%>
+            <h2><%= post.title %></h2>
+            
+            <p><%= post.post %></p>
+            <form action="/edit/<%= post.id %>" method="GET" style="display: inline;">
+            <button type="submit" class="btn btn-primary" style="width:90px;">Edit</button>
+            </form>
+            <form action="/delete" method="POST" style="display: inline;">
+            <input type="hidden" name="deleteItemId" value="<%= post.id %>">
+            <button type="submit" class="btn btn-primary" style="width:90px;">Delete</button>
+            <hr>
+            </form>
+
+        <% }; %>
+    </div>
+  
+
+
+<%- include('footer.ejs'); -%>
